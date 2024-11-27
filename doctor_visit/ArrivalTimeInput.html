@@ -1,0 +1,38 @@
+{{ block title }}
+    Выберите время прихода - Раунд {{ round_number }} из {{ total_rounds }}
+{{ endblock }}
+
+{{ block content }}
+    <div class="card">
+        <div class="card-body">
+            <div class="alert alert-info">
+                <h5>Раунд {{ round_number }} из {{ total_rounds }}</h5>
+            </div>
+            
+            <div class="alert alert-warning">
+                <h5>Как ввести время:</h5>
+                <ul>
+                    <li>Используйте формат <strong>ЧЧ:ММ</strong></li>
+                    <li>Часы: от 00 до 23</li>
+                    <li>Минуты: от 00 до 59</li>
+                    <li>Примеры: 09:30, 14:15, 10:00</li>
+                </ul>
+            </div>
+
+            <div class="form-group">
+                <label for="id_arrival_time"><strong>Введите время прихода:</strong></label>
+                <input type="text" 
+                       name="arrival_time" 
+                       id="id_arrival_time" 
+                       class="form-control" 
+                       required 
+                       pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]"
+                       placeholder="ЧЧ:ММ"
+                       title="Введите время в формате ЧЧ:ММ (например: 09:30)">
+                <small class="form-text text-muted">Например: 09:30 или 14:15</small>
+            </div>
+        </div>
+    </div>
+
+    {{ next_button }}
+{{ endblock }} 

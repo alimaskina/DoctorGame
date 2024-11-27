@@ -1,0 +1,86 @@
+{{ block title }}
+    Результаты - Раунд {{ round_number }} из {{ total_rounds }}
+{{ endblock }}
+
+{{ block content }}
+    <div class="alert alert-info mb-4">
+        <h5>Раунд {{ round_number }} из {{ total_rounds }}</h5>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Ваши результаты</h4>
+        </div>
+        <div class="card-body">
+            <div class="alert {{ if is_complete }}alert-success{{ else }}alert-danger{{ endif }}">
+                <h5>Статус: {{ if is_complete }}Вы успешно посетили врача{{ else }}Вы не попали на прием{{ endif }}</h5>
+            </div>
+            <table class="table table-bordered">
+                <tr>
+                    <th>Время прихода:</th>
+                    <td>{{ arrival_time }}</td>
+                </tr>
+                <tr>
+                    <th>Позиция в очереди:</th>
+                    <td>{{ queue_position }}</td>
+                </tr>
+                <tr>
+                    <th>Время ожидания:</th>
+                    <td>{{ waiting_time }} минут</td>
+                </tr>
+                <tr>
+                    <th>Время приема:</th>
+                    <td>{{ appointment_time }}</td>
+                </tr>
+                <tr>
+                    <th>Баллы за этот раунд:</th>
+                    <td><strong>{{ prize }}</strong></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h4>Информация об очереди</h4>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Игрок</th>
+                        <th>Время прихода</th>
+                        <th>Позиция в очереди</th>
+                        <th>Время ожидания</th>
+                        <th>Время приема</th>
+                        <th>Баллы</th>
+                        <th>Статус</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ for p in queue_info }}
+                        <tr {{ if p.id == player_id }}class="table-primary"{{ endif }}>
+                            <td>Игрок {{ p.id }}</td>
+                            <td>{{ p.arrival_time }}</td>
+                            <td>{{ p.queue_position }}</td>
+                            <td>{{ p.waiting_time }} мин</td>
+                            <td>{{ p.appointment_time }}</td>
+                            <td>{{ p.prize }}</td>
+                            <td>
+                                {{ if p.is_complete }}
+                                    <span class="badge bg-success">Принят</span>
+                                {{ else }}
+                                    <span class="badge bg-danger">Не принят</span>
+                                {{ endif }}
+                            </td>
+                        </tr>
+                    {{ endfor }}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {{ next_button }}
+{{ endblock }}
+
+
