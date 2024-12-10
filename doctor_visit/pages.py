@@ -22,5 +22,3 @@ class Results(Page):
             'is_complete': self.player.is_complete,
             'prize': self.player.prize,
         }
-
-page_sequence = [Introduction, ArrivalTimeInput, ResultsWaitPage, Results] 

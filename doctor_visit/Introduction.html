@@ -1,23 +1,23 @@
 {{ block title }}
-    Симуляция посещения врача - Раунд {{ round_number }} из {{ total_rounds }}
+Симуляция посещения врача - Раунд {{ round_number }} из {{ total_rounds }}
 {{ endblock }}
 
 {{ block content }}
-    <div class="card">
-        <div class="card-body">
-            <div class="alert alert-info">
-                <h5>Раунд {{ round_number }} из {{ total_rounds }}</h5>
-            </div>
-            <h4>Правила игры:</h4>
-            <ul>
-                <li>Время работы кабинета: с 10:00 до {{ closing_time }}</li>
-                <li>Каждый прием длится 30 минут</li>
-                <li>Базовая награда за прием: 700 очков</li>
-                <li>Штраф: 1 очко за каждую минуту ожидания</li>
-                <li>Если вы не успеете на прием до закрытия кабинета, вы получите 0 очков</li>
-            </ul>
+<div class="card">
+    <div class="card-body">
+        <div class="alert alert-info">
+            <h5>Раунд {{ round_number }} из {{ total_rounds }}</h5>
         </div>
+        <h4>Правила игры:</h4>
+        <ul>
+            <li>Время работы кабинета: с 10:00 до {{ closing_time }}</li>
+            <li>Каждый прием длится {{ Constants.appointment_duration }} минут</li>
+            <li>Базовая награда за прием: {{ Constants.base_reward }} очков</li>
+            <li>Штраф: {{ Constants.penalty_per_minute }} очко за каждую минуту ожидания</li>
+            <li>Если вы не успеете на прием до закрытия кабинета, вы получите 0 очков</li>
+        </ul>
     </div>
+</div>
 
-    {{ next_button }}
-{{ endblock }} 
+{{ next_button }}
+{{ endblock }}

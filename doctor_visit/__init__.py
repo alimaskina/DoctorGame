@@ -6,13 +6,13 @@ doc = """
 для минимизации времени ожидания и максимизации награды.
 """
 
-class C(BaseConstants):
-    NAME_IN_URL = 'doctor_visit'
-    PLAYERS_PER_GROUP = None
-    NUM_ROUNDS = 2  # Играем 5 раундов
-    APPOINTMENT_DURATION = 30  # минуты
-    BASE_REWARD = 700
-    PENALTY_PER_MINUTE = 1
+class Constants(BaseConstants):
+    name_in_url = 'doctor_visit'
+    players_per_group = None
+    num_rounds = 3  # Играем 2 раунда
+    appointment_duration = 30  # минуты
+    base_reward = 700
+    penalty_per_minute = 1
 
 class Subsession(BaseSubsession):
     pass
@@ -24,7 +24,7 @@ class Group(BaseGroup):
         sorted_players = sorted(players, key=lambda x: self.str_to_minutes(x.arrival_time))
         
         opening_time = 600  # 10:00 в минутах
-        closing_time = opening_time + (len(players) * C.APPOINTMENT_DURATION)
+        closing_time = opening_time + (round(len(players) * 0.8) * Constants.appointment_duration)
         current_time = opening_time
         
         # Сохраняем порядок в очереди и время приема для каждого игрока
@@ -32,27 +32,24 @@ class Group(BaseGroup):
             player.queue_position = i
             arrival_minutes = self.str_to_minutes(player.arrival_time)
             
-            # Если пришел до открытия
-            if arrival_minutes < opening_time:
-                waiting_time = opening_time - arrival_minutes
-                start_time = opening_time
-            else:
-                waiting_time = max(0, current_time - arrival_minutes)
-                start_time = max(arrival_minutes, current_time)
+            start_time = max(arrival_minutes, current_time)
+            waiting_time = max(0, start_time - arrival_minutes)
             
             # Проверка, успевает ли на прием
             # Пациент успевает, если его прием начинается до закрытия
             if start_time < closing_time:
                 player.waiting_time = waiting_time
                 player.is_complete = True
-                player.prize = C.BASE_REWARD - waiting_time * C.PENALTY_PER_MINUTE
+                player.prize = Constants.base_reward - waiting_time * Constants.penalty_per_minute
                 player.appointment_time = self.minutes_to_str(start_time)
-                current_time = start_time + C.APPOINTMENT_DURATION
             else:
                 player.waiting_time = 0
                 player.is_complete = False
                 player.prize = 0
                 player.appointment_time = "Не попал на прием"
+                
+            current_time = start_time + Constants.appointment_duration
+
             
             # Сохраняем результаты раунда
             player.participant.vars.setdefault('game_history', []).append({
@@ -140,7 +137,7 @@ class Player(BasePlayer):
 
     def custom_export(player):
         # Этот метод определяет, какие данные будут экспортированы
-        if player.round_number == C.NUM_ROUNDS:
+        if player.round_number == Constants.num_rounds:
             return {
                 'participant_id': player.participant.id_in_session,
                 'total_prize': player.total_prize,
@@ -164,7 +161,7 @@ class Introduction(Page):
             'num_players': len(self.subsession.get_players()),
             'closing_time': f"{10 + len(self.subsession.get_players())//2}:00",
             'round_number': self.round_number,
-            'total_rounds': C.NUM_ROUNDS
+            'total_rounds': Constants.num_rounds
         }
 
 class ArrivalTimeInput(Page):
@@ -174,7 +171,7 @@ class ArrivalTimeInput(Page):
     def vars_for_template(self):
         return {
             'round_number': self.round_number,
-            'total_rounds': C.NUM_ROUNDS
+            'total_rounds': Constants.num_rounds
         }
 
 class ResultsWaitPage(WaitPage):
@@ -208,12 +205,12 @@ class Results(Page):
             'appointment_time': self.appointment_time,
             'queue_position': self.queue_position,
             'round_number': self.round_number,
-            'total_rounds': C.NUM_ROUNDS
+            'total_rounds': Constants.num_rounds
         }
 
 class FinalResults(Page):
     def is_displayed(self):
-        return self.round_number == C.NUM_ROUNDS
+        return self.round_number == Constants.num_rounds
 
     def before_next_page(self, timeout_happened):
         # Сохраняем итоговую статистику в базу данных
