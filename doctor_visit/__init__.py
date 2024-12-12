@@ -159,7 +159,7 @@ class Introduction(Page):
     def vars_for_template(self):
         return {
             'num_players': len(self.subsession.get_players()),
-            'closing_time': f"{10 + len(self.subsession.get_players())//2}:00",
+            'closing_time': f"{10 + round(0.8 * len(self.subsession.get_players()))//2}:00",
             'round_number': self.round_number,
             'total_rounds': Constants.num_rounds
         }
